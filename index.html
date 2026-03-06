@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SnapVee – Video Downloader</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Mono:wght@400;600&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050810;
+    --surface: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+    --accent: #00f5c4;
+    --accent2: #7b5ea7;
+    --accent3: #ff4f6d;
+    --text: #e8eaf2;
+    --muted: #5a607a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(0,245,196,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 85% 70%, rgba(123,94,167,0.08) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 30% at 60% 90%, rgba(255,79,109,0.05) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative; z-index: 1;
+    max-width: 800px; margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  header {
+    padding: 60px 0 36px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .logo-badge { display: flex; align-items: center; gap: 14px; }
+
+  .logo-icon {
+    width: 54px; height: 54px; border-radius: 15px;
+    background: linear-gradient(135deg, var(--accent), #00b8ff);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 0 30px rgba(0,245,196,0.4);
+  }
+
+  .logo-text {
+    font-family: 'Syne', sans-serif; font-size: 48px; font-weight: 800; letter-spacing: -1px;
+    background: linear-gradient(135deg, var(--accent) 0%, #00b8ff 50%, #fff 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+
+  .tagline { font-size: 15px; color: var(--muted); }
+
+  .version-tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    color: var(--accent); background: rgba(0,245,196,0.08);
+    border: 1px solid rgba(0,245,196,0.2); padding: 3px 12px;
+    border-radius: 20px; letter-spacing: 0.1em;
+  }
+
+  .platforms-row {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 28px; animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .plat-tag {
+    font-size: 12px; font-family: 'IBM Plex Mono', monospace;
+    padding: 5px 13px; border-radius: 6px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); transition: all 0.2s; cursor: default; user-select: none;
+  }
+  .plat-tag:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,245,196,0.06); }
+
+  .main-card {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 20px; padding: 32px; backdrop-filter: blur(20px);
+    animation: fadeUp 0.8s 0.3s ease both; position: relative; overflow: hidden;
+  }
+
+  .main-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.6;
+  }
+
+  .input-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+  .input-wrap { position: relative; }
+
+  .input-wrap .input-icon {
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); font-size: 15px; pointer-events: none; transition: color 0.2s; z-index: 2;
+  }
+  .input-wrap:focus-within .input-icon { color: var(--accent); }
+
+  .input-wrap input {
+    width: 100%; padding: 15px 20px 15px 46px;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    border-radius: 12px; color: var(--text); font-size: 13px;
+    font-family: 'IBM Plex Mono', monospace; transition: all 0.25s;
+    outline: none; direction: ltr; text-align: left;
+  }
+  .input-wrap input::placeholder { color: var(--muted); font-size: 12px; }
+  .input-wrap input:focus {
+    border-color: rgba(0,245,196,0.4); background: rgba(0,245,196,0.03);
+    box-shadow: 0 0 0 3px rgba(0,245,196,0.07);
+  }
+  .input-wrap input.error { border-color: rgba(255,79,109,0.5); box-shadow: 0 0 0 3px rgba(255,79,109,0.08); }
+
+  .optional-badge {
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 10px; color: var(--muted); font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .quality-row { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .quality-label {
+    font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace;
+    width: 100%; margin-bottom: 4px; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  .q-btn {
+    padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--muted); font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace; cursor: pointer; transition: all 0.2s;
+  }
+  .q-btn:hover { border-color: rgba(0,245,196,0.3); color: var(--text); }
+  .q-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,245,196,0.08); }
+
+  .btn-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; }
+
+  .btn-download {
+    padding: 16px 28px;
+    background: linear-gradient(135deg, var(--accent), #00b8ff);
+    color: #000; border: none; border-radius: 12px;
+    font-size: 16px; font-weight: 700; font-family: 'Cairo', sans-serif;
+    cursor: pointer; transition: all 0.25s;
+    box-shadow: 0 4px 20px rgba(0,245,196,0.25);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-download:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,245,196,0.4); }
+  .btn-download:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .btn-clear {
+    padding: 16px; background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); border-radius: 12px; font-size: 18px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-clear:hover { border-color: var(--accent3); color: var(--accent3); background: rgba(255,79,109,0.06); }
+
+  .status-area { margin-top: 20px; display: none; }
+  .status-area.show { display: block; }
+
+  .progress-bar-wrap {
+    height: 4px; background: rgba(255,255,255,0.06);
+    border-radius: 4px; overflow: hidden; margin-bottom: 10px;
+  }
+  .progress-bar {
+    height: 100%; background: linear-gradient(90deg, var(--accent), #00b8ff);
+    border-radius: 4px; width: 0%; transition: width 0.4s ease;
+    box-shadow: 0 0 10px rgba(0,245,196,0.5);
+  }
+
+  .status-text {
+    font-size: 13px; color: var(--muted); font-family: 'IBM Plex Mono', monospace;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .status-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 8px var(--accent);
+    animation: pulse 1.2s infinite; flex-shrink: 0;
+  }
+
+  .result-card {
+    margin-top: 16px; padding: 20px;
+    background: rgba(0,245,196,0.04); border: 1px solid rgba(0,245,196,0.15);
+    border-radius: 14px; display: none; animation: fadeUp 0.4s ease;
+  }
+  .result-card.show { display: block; }
+  .result-card.error-card { background: rgba(255,79,109,0.04); border-color: rgba(255,79,109,0.2); }
+
+  .result-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+
+  .result-thumb-placeholder {
+    width: 80px; height: 52px; border-radius: 8px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+
+  .result-meta { flex: 1; min-width: 0; }
+  .result-title-text {
+    font-size: 13px; font-weight: 600; color: var(--text);
+    margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .result-platform { font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+
+  .dl-links { display: flex; flex-direction: column; gap: 8px; }
+
+  .dl-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 16px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text); text-decoration: none; font-size: 13px;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .dl-link:hover { border-color: var(--accent); background: rgba(0,245,196,0.06); transform: translateX(-3px); }
+  .dl-link .dl-icon { font-size: 16px; flex-shrink: 0; }
+  .dl-link .dl-info { flex: 1; }
+  .dl-link .dl-name { font-weight: 600; font-size: 13px; }
+  .dl-link .dl-sub { font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
+  .dl-link .dl-arrow { color: var(--muted); font-size: 14px; }
+
+  .error-msg { font-size: 13px; color: var(--accent3); display: flex; align-items: center; gap: 8px; }
+
+  .section-divider {
+    height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 32px 0;
+  }
+
+  .bottom-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    animation: fadeUp 0.8s 0.5s ease both;
+  }
+
+  .info-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px; }
+
+  .info-card-title {
+    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+    color: var(--accent); margin-bottom: 16px; letter-spacing: 0.05em; text-transform: uppercase;
+  }
+
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .feature-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: #8a90a8; line-height: 1.5; }
+  .feature-list li .check { color: var(--accent); flex-shrink: 0; font-size: 12px; margin-top: 2px; }
+
+  .steps-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .steps-list li { display: flex; align-items: center; gap: 12px; font-size: 13px; color: #8a90a8; }
+
+  .step-num {
+    width: 26px; height: 26px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #00b8ff);
+    color: #000; font-size: 11px; font-weight: 700;
+    font-family: 'IBM Plex Mono', monospace;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  footer {
+    text-align: center; padding: 32px 0 0;
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted);
+    animation: fadeUp 0.8s 0.6s ease both;
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+  }
+  footer::before, footer::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  #toast {
+    position: fixed; bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(0,245,196,0.1); border: 1px solid rgba(0,245,196,0.25);
+    backdrop-filter: blur(12px); color: var(--accent);
+    padding: 12px 24px; border-radius: 10px;
+    font-family: 'Cairo', sans-serif; font-size: 14px;
+    z-index: 9999; opacity: 0; transition: all 0.3s ease;
+    pointer-events: none; white-space: nowrap;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  #toast.err { background: rgba(255,79,109,0.1); border-color: rgba(255,79,109,0.3); color: var(--accent3); }
+
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(0,0,0,0.3); border-top-color: #000;
+    border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0;
+  }
+
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeUp   { from{opacity:0;transform:translateY(20px)}  to{opacity:1;transform:translateY(0)} }
+  @keyframes pulse    { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  @keyframes spin     { to{transform:rotate(360deg)} }
+
+  @media(max-width:520px){
+    .logo-text{font-size:36px}
+    .bottom-grid{grid-template-columns:1fr}
+    .btn-row{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header>
+    <div class="logo-badge">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">SnapVee</div>
+    </div>
+    <div class="tagline">تحميل فيديوهات السوشيال ميديا بسهولة وسرعة</div>
+    <div class="version-tag">v2.6 · FREE · NO WATERMARK</div>
+  </header>
+
+  <div class="platforms-row">
+    <div class="plat-tag">🎬 YouTube</div>
+    <div class="plat-tag">🎵 TikTok</div>
+    <div class="plat-tag">📸 Instagram</div>
+    <div class="plat-tag">🐦 X / Twitter</div>
+    <div class="plat-tag">📺 Bilibili</div>
+    <div class="plat-tag">📱 Xiaohongshu</div>
+    <div class="plat-tag">🎮 Twitch</div>
+    <div class="plat-tag">🎵 SoundCloud</div>
+  </div>
+
+  <div class="main-card">
+    <div class="input-group">
+      <div class="input-wrap">
+        <input id="url1" type="text" placeholder="https://  — الصق رابط الفيديو هنا" autocomplete="off"/>
+        <span class="input-icon">🔗</span>
+      </div>
+      <div class="input-wrap">
+        <input id="url2" type="text" placeholder="https://  — رابط ثاني" autocomplete="off"/>
+        <span class="input-icon">🔗</span>
+        <span class="optional-badge">اختياري</span>
+      </div>
+      <div class="input-wrap">
+        <input id="url3" type="text" placeholder="https://  — رابط ثالث" autocomplete="off"/>
+        <span class="input-icon">🔗</span>
+        <span class="optional-badge">اختياري</span>
+      </div>
+    </div>
+
+    <div class="quality-row">
+      <div class="quality-label">// جودة الفيديو</div>
+      <button class="q-btn" data-q="max" onclick="setQuality(this)">Max</button>
+      <button class="q-btn active" data-q="1080" onclick="setQuality(this)">1080p</button>
+      <button class="q-btn" data-q="720" onclick="setQuality(this)">720p</button>
+      <button class="q-btn" data-q="480" onclick="setQuality(this)">480p</button>
+      <button class="q-btn" data-q="360" onclick="setQuality(this)">360p</button>
+      <button class="q-btn" data-q="audio" onclick="setQuality(this)">🎵 صوت فقط</button>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-download" id="dlBtn" onclick="startDownload()">
+        <span id="btnIcon">⬇</span>
+        <span id="btnText">تحميل الفيديو</span>
+      </button>
+      <button class="btn-clear" onclick="clearAll()" title="مسح">✕</button>
+    </div>
+
+    <div class="status-area" id="statusArea">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="status-text">
+        <div class="status-dot"></div>
+        <span id="statusText">جاري المعالجة...</span>
+      </div>
+    </div>
+
+    <div id="resultsContainer"></div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <div class="bottom-grid">
+    <div class="info-card">
+      <div class="info-card-title">✦ المميزات</div>
+      <ul class="feature-list">
+        <li><span class="check">◆</span> تحميل بدون علامة مائية</li>
+        <li><span class="check">◆</span> جودة تصل لـ 4K</li>
+        <li><span class="check">◆</span> استخراج الصوت MP3</li>
+        <li><span class="check">◆</span> تحليل 3 روابط دفعة واحدة</li>
+        <li><span class="check">◆</span> يعمل مباشرة من المتصفح</li>
+        <li><span class="check">◆</span> مجاني 100%</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">◎ طريقة الاستخدام</div>
+      <ul class="steps-list">
+        <li><span class="step-num">01</span> انسخ رابط الفيديو</li>
+        <li><span class="step-num">02</span> الصقه في الحقل</li>
+        <li><span class="step-num">03</span> اختر الجودة المناسبة</li>
+        <li><span class="step-num">04</span> اضغط تحميل واستمتع</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>SnapVee Tool &copy; 2026 · Powered by Cobalt API · صُنع بـ ⚡</footer>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  let selectedQuality = '1080';
+  let isLoading = false;
+
+  function setQuality(btn) {
+    document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedQuality = btn.dataset.q;
+  }
+
+  async function startDownload() {
+    if (isLoading) return;
+
+    const urls = [
+      document.getElementById('url1').value.trim(),
+      document.getElementById('url2').value.trim(),
+      document.getElementById('url3').value.trim(),
+    ].filter(u => u.length > 0);
+
+    if (urls.length === 0) {
+      markError(document.getElementById('url1'));
+      showToast('أدخل رابطاً واحداً على الأقل ⚠', true);
+      return;
+    }
+
+    for (const u of urls) {
+      if (!isValidUrl(u)) {
+        showToast('رابط غير صالح — تأكد من النسخ الصحيح', true);
+        return;
+      }
+    }
+
+    setLoading(true);
+    document.getElementById('resultsContainer').innerHTML = '';
+    showStatus('جاري تحليل الروابط...', 10);
+
+    const results = [];
+    for (let i = 0; i < urls.length; i++) {
+      showStatus(`جاري معالجة الرابط ${i+1} من ${urls.length}...`, 10 + ((i / urls.length) * 80));
+      const res = await fetchCobalt(urls[i]);
+      results.push({ inputUrl: urls[i], ...res });
+      await sleep(200);
+    }
+
+    showStatus('تم ✔', 100);
+    await sleep(400);
+    hideStatus();
+    renderResults(results);
+    setLoading(false);
+  }
+
+  async function fetchCobalt(url) {
+    const isAudio = selectedQuality === 'audio';
+    const body = {
+      url: url,
+      videoQuality: isAudio ? '720' : (selectedQuality === 'max' ? 'max' : selectedQuality),
+      audioFormat: 'mp3',
+      downloadMode: isAudio ? 'audio' : 'auto',
+      filenameStyle: 'pretty',
+    };
+
+    try {
+      const resp = await fetch('https://api.cobalt.tools/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        return { status: 'error', message: data?.error?.code || `خطأ في الخادم (${resp.status})` };
+      }
+
+      return data;
+    } catch (e) {
+      return { status: 'error', message: 'تعذّر الاتصال بـ Cobalt API — تأكد من الإنترنت أو جرب لاحقاً' };
+    }
+  }
+
+  function renderResults(results) {
+    const container = document.getElementById('resultsContainer');
+    container.innerHTML = '';
+
+    results.forEach((res, idx) => {
+      const card = document.createElement('div');
+      card.className = 'result-card show' + (res.status === 'error' ? ' error-card' : '');
+      card.style.marginTop = idx === 0 ? '18px' : '12px';
+
+      if (res.status === 'error') {
+        card.innerHTML = `
+          <div class="error-msg">❌ <span>${sanitize(res.message || 'حدث خطأ غير معروف')}</span></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;font-family:'IBM Plex Mono',monospace;direction:ltr;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${sanitize(res.inputUrl)}</div>
+        `;
+      } else if (res.status === 'redirect' || res.status === 'tunnel') {
+        const isAudio = selectedQuality === 'audio';
+        const filename = res.filename || 'video';
+        const qualityLabel = isAudio ? 'MP3 · 320kbps' : (selectedQuality === 'max' ? 'Best Quality' : selectedQuality + 'p · MP4');
+
+        card.innerHTML = `
+          <div class="result-top">
+            <div class="result-thumb-placeholder">${isAudio ? '🎵' : '🎬'}</div>
+            <div class="result-meta">
+              <div class="result-title-text">${sanitize(filename)}</div>
+              <div class="result-platform">${detectPlatform(res.inputUrl)} · ${qualityLabel}</div>
+            </div>
+          </div>
+          <div class="dl-links">
+            <a class="dl-link" href="${res.url}" target="_blank" rel="noopener noreferrer">
+              <span class="dl-icon">${isAudio ? '🎵' : '📥'}</span>
+              <div class="dl-info">
+                <div class="dl-name">${isAudio ? 'تحميل الصوت' : 'تحميل الفيديو'}</div>
+                <div class="dl-sub">${qualityLabel}</div>
+              </div>
+              <span class="dl-arrow">↗</span>
+            </a>
+          </div>
+        `;
+      } else if (res.status === 'picker') {
+        const items = (res.picker || []).slice(0, 8);
+        const linksHtml = items.map((item, i) => `
+          <a class="dl-link" href="${item.url}" target="_blank" rel="noopener noreferrer">
+            <span class="dl-icon">${item.type === 'photo' ? '🖼' : '🎬'}</span>
+            <div class="dl-info">
+              <div class="dl-name">${item.type === 'photo' ? 'صورة' : 'فيديو'} ${i+1}</div>
+              <div class="dl-sub">${item.type === 'photo' ? 'JPG/PNG' : 'MP4'}</div>
+            </div>
+            <span class="dl-arrow">↗</span>
+          </a>
+        `).join('');
+
+        card.innerHTML = `
+          <div class="result-top">
+            <div class="result-thumb-placeholder">📦</div>
+            <div class="result-meta">
+              <div class="result-title-text">ميديا متعددة — ${items.length} ملف</div>
+              <div class="result-platform">${detectPlatform(res.inputUrl)} · Carousel</div>
+            </div>
+          </div>
+          <div class="dl-links">${linksHtml}</div>
+        `;
+      } else {
+        card.classList.add('error-card');
+        card.innerHTML = `<div class="error-msg">⚠ <span>استجابة غير متوقعة — جرب رابطاً آخر</span></div>`;
+      }
+
+      container.appendChild(card);
+    });
+  }
+
+  /* ── Utilities ── */
+  function isValidUrl(s) { try { new URL(s); return true; } catch { return false; } }
+
+  function sanitize(str) {
+    const d = document.createElement('div');
+    d.textContent = String(str);
+    return d.innerHTML;
+  }
+
+  function detectPlatform(url) {
+    if (!url) return 'Unknown';
+    if (url.includes('youtube') || url.includes('youtu.be')) return 'YouTube';
+    if (url.includes('tiktok')) return 'TikTok';
+    if (url.includes('instagram')) return 'Instagram';
+    if (url.includes('twitter') || url.includes('x.com')) return 'X / Twitter';
+    if (url.includes('bilibili')) return 'Bilibili';
+    if (url.includes('twitch')) return 'Twitch';
+    if (url.includes('soundcloud')) return 'SoundCloud';
+    return 'Other';
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  function markError(el) {
+    el.classList.add('error');
+    el.focus();
+    setTimeout(() => el.classList.remove('error'), 1000);
+  }
+
+  function setLoading(val) {
+    isLoading = val;
+    document.getElementById('dlBtn').disabled = val;
+    const iconEl = document.getElementById('btnIcon');
+    const textEl = document.getElementById('btnText');
+    if (val) {
+      iconEl.className = 'spinner';
+      iconEl.textContent = '';
+      textEl.textContent = 'جاري المعالجة...';
+    } else {
+      iconEl.className = '';
+      iconEl.textContent = '⬇';
+      textEl.textContent = 'تحميل الفيديو';
+    }
+  }
+
+  function showStatus(msg, pct) {
+    document.getElementById('statusArea').classList.add('show');
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('statusText').textContent = msg;
+  }
+
+  function hideStatus() {
+    document.getElementById('statusArea').classList.remove('show');
+    document.getElementById('progressBar').style.width = '0%';
+  }
+
+  function clearAll() {
+    ['url1','url2','url3'].forEach(id => {
+      const el = document.getElementById(id);
+      el.value = '';
+      el.classList.remove('error');
+    });
+    document.getElementById('resultsContainer').innerHTML = '';
+    hideStatus();
+    showToast('تم المسح ✓');
+  }
+
+  function showToast(msg, isErr = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = (isErr ? 'err ' : '') + 'show';
+    clearTimeout(t._t);
+    t._t = setTimeout(() => { t.className = isErr ? 'err' : ''; }, 3200);
+  }
+
+  document.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') startDownload(); });
+  });
+</script>
+</body>
+</html>
