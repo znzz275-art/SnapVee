@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>KoraFlash | أخبار الكرة</title>
+<meta name="description" content="آخر أخبار كرة القدم المحلية والعالمية"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Readex+Pro:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --g:#00e676;--gd:#00c853;--gg:rgba(0,230,118,.15);
+  --bg:#080c0a;--bg2:#0e1510;--bg3:#131d14;
+  --card:#111916;--cb:#1c2d1e;
+  --txt:#e8f5e9;--muted:#6b9970;
+  --acc:#ffeb3b;--red:#ff1744;
+  --head:'Cairo',sans-serif;--body:'Readex Pro',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body{
+  background:var(--bg);color:var(--txt);
+  font-family:var(--body);min-height:100vh;overflow-x:hidden;
+}
+
+/* ── GRAIN ── */
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.6;
+}
+
+/* ── HEADER ── */
+header{
+  position:sticky;top:0;z-index:200;
+  background:rgba(8,12,10,.88);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--cb);
+}
+.hinner{
+  max-width:1440px;margin:auto;padding:0 28px;
+  display:flex;align-items:center;justify-content:space-between;height:62px;
+  gap:20px;
+}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;}
+.logo-icon{
+  width:40px;height:40px;border-radius:11px;
+  background:linear-gradient(135deg,var(--g),var(--gd));
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;box-shadow:0 0 22px rgba(0,230,118,.3);
+  animation:logopulse 3s ease-in-out infinite;flex-shrink:0;
+}
+@keyframes logopulse{0%,100%{box-shadow:0 0 22px rgba(0,230,118,.3)}50%{box-shadow:0 0 40px rgba(0,230,118,.55)}}
+.logo-text{font-family:var(--head);font-weight:900;font-size:22px;letter-spacing:-.5px;}
+.logo-text span{color:var(--g);}
+.nav{display:flex;gap:6px;}
+.npill{
+  padding:6px 17px;border-radius:20px;font-size:12.5px;font-weight:600;
+  cursor:pointer;border:1px solid transparent;background:transparent;
+  color:var(--muted);font-family:var(--body);transition:all .2s;
+}
+.npill:hover,.npill.on{background:var(--gg);border-color:var(--g);color:var(--g);}
+.livebadge{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--red);font-family:var(--head);flex-shrink:0;}
+.ldot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink 1.2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+
+/* ── TICKER ── */
+.ticker{background:var(--g);overflow:hidden;height:34px;display:flex;align-items:center;}
+.tlabel{
+  background:var(--gd);color:#000;font-family:var(--head);font-weight:900;
+  font-size:12px;padding:0 18px;height:100%;display:flex;align-items:center;
+  white-space:nowrap;flex-shrink:0;letter-spacing:.5px;
+}
+.tscroll-wrap{overflow:hidden;flex:1;}
+.tscroll{display:flex;animation:tmove 50s linear infinite;gap:60px;}
+.tscroll:hover{animation-play-state:paused;}
+.titem{color:#000;font-family:var(--body);font-weight:700;font-size:12.5px;white-space:nowrap;display:flex;align-items:center;gap:8px;}
+.titem::before{content:'⚽';font-size:11px;}
+@keyframes tmove{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── HERO ── */
+.hero{max-width:1440px;margin:36px auto 0;padding:0 28px;display:grid;grid-template-columns:1fr 340px;gap:22px;}
+.hmain{
+  position:relative;border-radius:22px;overflow:hidden;
+  background:var(--card);border:1px solid var(--cb);min-height:460px;
+  cursor:pointer;transition:transform .3s,box-shadow .3s;
+}
+.hmain:hover{transform:scale(1.008);box-shadow:0 20px 60px rgba(0,230,118,.1);}
+.hbg{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,#0a2e12 0%,#143d1a 40%,#091a0c 100%);
+}
+.hbg-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:130px;opacity:.12;user-select:none;}
+.hgrad{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,12,10,.97) 0%,rgba(8,12,10,.45) 55%,transparent 100%);}
+.hcontent{position:absolute;bottom:0;left:0;right:0;padding:28px 30px;}
+.catbadge{
+  display:inline-block;background:var(--g);color:#000;
+  font-family:var(--head);font-weight:900;font-size:10.5px;
+  padding:4px 13px;border-radius:5px;margin-bottom:13px;
+  text-transform:uppercase;letter-spacing:1.2px;
+}
+.htitle{font-family:var(--head);font-weight:900;font-size:27px;line-height:1.45;margin-bottom:12px;color:#fff;}
+.hmeta{display:flex;gap:18px;font-size:12.5px;color:var(--muted);}
+
+/* ── SIDE CARDS ── */
+.hside{display:flex;flex-direction:column;gap:14px;}
+.scard{
+  background:var(--card);border:1px solid var(--cb);border-radius:16px;
+  padding:15px;display:flex;gap:13px;cursor:pointer;transition:all .25s;
+  position:relative;overflow:hidden;
+}
+.scard::before{
+  content:'';position:absolute;right:0;top:0;bottom:0;width:3px;
+  background:var(--g);transform:scaleY(0);transition:transform .25s;border-radius:0 16px 16px 0;
+}
+.scard:hover{background:var(--bg3);border-color:var(--g);}
+.scard:hover::before{transform:scaleY(1);}
+.sthumb{
+  width:76px;height:76px;border-radius:10px;background:var(--bg3);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:30px;overflow:hidden;
+}
+.sthumb img{width:100%;height:100%;object-fit:cover;}
+.sinfo{flex:1;min-width:0;}
+.scat{font-size:10px;color:var(--g);font-weight:700;text-transform:uppercase;letter-spacing:1.2px;margin-bottom:5px;}
+.stitle{font-family:var(--head);font-weight:700;font-size:13.5px;line-height:1.5;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.stime{font-size:11px;color:var(--muted);}
+
+/* ── MAIN WRAP ── */
+.mwrap{max-width:1440px;margin:40px auto 0;padding:0 28px;display:grid;grid-template-columns:1fr 310px;gap:30px;}
+
+/* ── SECTION HEAD ── */
+.sechead{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.sectitle{font-family:var(--head);font-weight:900;font-size:19px;}
+.secline{flex:1;height:1px;background:var(--cb);}
+.seccount{font-size:11.5px;color:var(--muted);background:var(--card);padding:3px 11px;border-radius:20px;border:1px solid var(--cb);}
+
+/* ── NEWS GRID ── */
+.ngrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+.ncard{
+  background:var(--card);border:1px solid var(--cb);border-radius:17px;
+  overflow:hidden;cursor:pointer;transition:all .3s;
+}
+.ncard:hover{border-color:var(--g);transform:translateY(-4px);box-shadow:0 14px 44px rgba(0,230,118,.11);}
+.nimg{width:100%;height:175px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:48px;overflow:hidden;flex-shrink:0;}
+.nimg img{width:100%;height:100%;object-fit:cover;}
+.nbody{padding:15px 16px;}
+.ncat{font-size:10px;color:var(--g);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:7px;}
+.ntitle{font-family:var(--head);font-weight:700;font-size:14.5px;line-height:1.6;margin-bottom:9px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.nexcerpt{font-size:12px;color:var(--muted);line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:11px;}
+.nfoot{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);border-top:1px solid var(--cb);padding-top:10px;}
+
+/* ── LOAD MORE ── */
+.loadmore-wrap{grid-column:1/-1;text-align:center;margin-top:10px;}
+.loadmore{
+  background:transparent;border:1px solid var(--cb);color:var(--muted);
+  font-family:var(--head);font-weight:700;font-size:13px;
+  padding:11px 36px;border-radius:30px;cursor:pointer;transition:all .25s;
+}
+.loadmore:hover{background:var(--gg);border-color:var(--g);color:var(--g);}
+
+/* ── SIDEBAR ── */
+.swidget{background:var(--card);border:1px solid var(--cb);border-radius:17px;padding:20px;margin-bottom:22px;}
+.wtitle{font-family:var(--head);font-weight:900;font-size:14.5px;margin-bottom:15px;padding-bottom:12px;border-bottom:1px solid var(--cb);display:flex;align-items:center;gap:7px;}
+.tlist{display:flex;flex-direction:column;gap:12px;}
+.titem-s{
+  display:flex;gap:12px;cursor:pointer;padding:10px 12px;border-radius:11px;
+  border:1px solid transparent;transition:all .22s;
+}
+.titem-s:hover{background:var(--bg3);border-color:var(--cb);}
+.tnum{font-family:var(--head);font-weight:900;font-size:20px;color:var(--cb);width:28px;flex-shrink:0;line-height:1;}
+.tcont{flex:1;}
+.ttitle{font-family:var(--head);font-weight:700;font-size:13px;line-height:1.55;margin-bottom:4px;}
+.ttime{font-size:11px;color:var(--muted);}
+.tagcloud{display:flex;flex-wrap:wrap;gap:7px;}
+.tag{background:var(--bg3);border:1px solid var(--cb);border-radius:7px;padding:5px 12px;font-size:12px;cursor:pointer;transition:all .2s;}
+.tag:hover{background:var(--gg);border-color:var(--g);color:var(--g);}
+.statsbox{font-size:13px;color:var(--muted);line-height:2.2;}
+.statsbox strong{color:var(--g);}
+
+/* ── SKELETON ── */
+.skel{background:var(--card);border:1px solid var(--cb);border-radius:17px;overflow:hidden;animation:skpulse 1.6s ease-in-out infinite;}
+.skeli{width:100%;height:175px;background:var(--bg3);}
+.skelb{padding:15px;}
+.skell{height:11px;background:var(--bg3);border-radius:6px;margin-bottom:9px;}
+.skell.s{width:55%;}
+@keyframes skpulse{0%,100%{opacity:.55}50%{opacity:1}}
+
+/* ── MODAL ── */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.87);z-index:900;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(10px);
+}
+.overlay.open{opacity:1;pointer-events:all;}
+.modal{
+  background:var(--bg2);border:1px solid var(--cb);border-radius:26px;
+  max-width:780px;width:100%;max-height:88vh;overflow-y:auto;
+  transform:translateY(28px);transition:transform .3s;
+}
+.overlay.open .modal{transform:translateY(0);}
+.mhero{
+  width:100%;height:270px;background:var(--bg3);border-radius:26px 26px 0 0;
+  overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:80px;position:relative;
+}
+.mhero img{width:100%;height:100%;object-fit:cover;}
+.mhero-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(14,21,16,.95) 0%,transparent 60%);}
+.mclose{
+  position:absolute;top:18px;left:18px;width:36px;height:36px;border-radius:50%;
+  background:rgba(0,0,0,.6);border:1px solid var(--cb);color:var(--txt);
+  font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;z-index:10;
+}
+.mclose:hover{background:var(--red);border-color:var(--red);}
+.mbody{padding:28px 30px;}
+.mcat{display:inline-block;background:var(--g);color:#000;font-family:var(--head);font-weight:900;font-size:10.5px;padding:4px 13px;border-radius:5px;margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;}
+.mtitle{font-family:var(--head);font-weight:900;font-size:23px;line-height:1.5;margin-bottom:13px;}
+.mmeta{font-size:12px;color:var(--muted);margin-bottom:18px;display:flex;gap:14px;flex-wrap:wrap;}
+.mtext{font-size:14.5px;line-height:2;color:#c8e6c9;margin-bottom:22px;}
+.mlink{
+  display:inline-block;background:var(--g);color:#000;font-family:var(--head);
+  font-weight:900;font-size:13px;padding:11px 26px;border-radius:9px;text-decoration:none;
+  transition:background .2s;
+}
+.mlink:hover{background:var(--gd);}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:26px;left:50%;
+  transform:translateX(-50%) translateY(16px);
+  background:var(--g);color:#000;font-family:var(--head);font-weight:700;font-size:13px;
+  padding:10px 26px;border-radius:30px;z-index:9999;opacity:0;transition:all .3s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── EMPTY ── */
+.empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted);}
+.empty .ei{font-size:56px;margin-bottom:14px;}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--cb);margin-top:70px;padding:40px 28px;text-align:center;}
+.flogo{font-family:var(--head);font-weight:900;font-size:22px;margin-bottom:7px;}
+.flogo span{color:var(--g);}
+.ftxt{font-size:12.5px;color:var(--muted);}
+
+/* ── FADE-IN ── */
+.fi{opacity:0;transform:translateY(18px);animation:fup .5s forwards;}
+@keyframes fup{to{opacity:1;transform:translateY(0)}}
+.fi:nth-child(1){animation-delay:.04s}.fi:nth-child(2){animation-delay:.09s}
+.fi:nth-child(3){animation-delay:.14s}.fi:nth-child(4){animation-delay:.19s}
+.fi:nth-child(5){animation-delay:.24s}.fi:nth-child(6){animation-delay:.29s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .hero{grid-template-columns:1fr;}
+  .hside{display:none;}
+  .mwrap{grid-template-columns:1fr;}
+  aside{display:none;}
+}
+@media(max-width:600px){
+  .ngrid{grid-template-columns:1fr;}
+  .nav{display:none;}
+  .hinner{padding:0 16px;}
+  .hero,.mwrap{padding:0 16px;}
+  .htitle{font-size:20px;}
+  footer{padding:30px 16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="hinner">
+    <a href="#" class="logo">
+      <div class="logo-icon">⚽</div>
+      <div class="logo-text">Kora<span>Flash</span></div>
+    </a>
+    <nav class="nav" id="nav">
+      <button class="npill on" data-cat="all">الكل</button>
+      <button class="npill" data-cat="محلي">محلي</button>
+      <button class="npill" data-cat="أوروبي">أوروبي</button>
+      <button class="npill" data-cat="عالمي">عالمي</button>
+      <button class="npill" data-cat="انتقالات">انتقالات</button>
+      <button class="npill" data-cat="مباريات">مباريات</button>
+    </nav>
+    <div class="livebadge"><div class="ldot"></div>مباشر الآن</div>
+  </div>
+</header>
+
+<!-- ══ TICKER ══ -->
+<div class="ticker">
+  <div class="tlabel">⚡ عاجل</div>
+  <div class="tscroll-wrap">
+    <div class="tscroll" id="ticker"></div>
+  </div>
+</div>
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="heroSection">
+  <div class="hmain" id="heroMain">
+    <div class="hbg"></div>
+    <div class="hbg-emoji">⚽</div>
+    <div class="hgrad"></div>
+    <div class="hcontent">
+      <div class="catbadge" id="hcat">تحميل...</div>
+      <h1 class="htitle" id="htitle">جاري تحميل أحدث الأخبار...</h1>
+      <div class="hmeta"><span id="hsrc">KoraFlash</span><span id="htime">الآن</span></div>
+    </div>
+  </div>
+  <div class="hside" id="hside"></div>
+</section>
+
+<!-- ══ MAIN ══ -->
+<div class="mwrap">
+  <main>
+    <div class="sechead">
+      <h2 class="sectitle">📰 آخر الأخبار</h2>
+      <div class="secline"></div>
+      <div class="seccount" id="newsCount">...</div>
+    </div>
+    <div class="ngrid" id="ngrid">
+      <div class="skel"><div class="skeli"></div><div class="skelb"><div class="skell s"></div><div class="skell"></div><div class="skell"></div></div></div>
+      <div class="skel"><div class="skeli"></div><div class="skelb"><div class="skell s"></div><div class="skell"></div><div class="skell"></div></div></div>
+      <div class="skel"><div class="skeli"></div><div class="skelb"><div class="skell s"></div><div class="skell"></div><div class="skell"></div></div></div>
+      <div class="skel"><div class="skeli"></div><div class="skelb"><div class="skell s"></div><div class="skell"></div><div class="skell"></div></div></div>
+    </div>
+  </main>
+
+  <aside>
+    <div class="swidget">
+      <div class="wtitle">🔥 الأكثر قراءة</div>
+      <div class="tlist" id="toplist"></div>
+    </div>
+    <div class="swidget">
+      <div class="wtitle">🏷️ المواضيع</div>
+      <div class="tagcloud" id="tagcloud"></div>
+    </div>
+    <div class="swidget" style="border-color:var(--g);background:linear-gradient(135deg,var(--bg3),var(--card))">
+      <div class="wtitle" style="color:var(--g)">📊 إحصائيات</div>
+      <div class="statsbox" id="stats">جاري التحميل...</div>
+    </div>
+  </aside>
+</div>
+
+<!-- ══ MODAL ══ -->
+<div class="overlay" id="overlay" onclick="maybeClose(event)">
+  <div class="modal" id="modalBox">
+    <div class="mhero" id="mhero"><span>⚽</span><div class="mhero-grad"></div></div>
+    <button class="mclose" onclick="closeModal()">✕</button>
+    <div class="mbody">
+      <div class="mcat" id="mcat"></div>
+      <h2 class="mtitle" id="mtitle"></h2>
+      <div class="mmeta"><span id="msrc"></span><span id="mtime2"></span></div>
+      <p class="mtext" id="mtext"></p>
+      <a class="mlink" id="mlink" href="#" target="_blank">قراءة الخبر كاملاً ←</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"></div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="flogo">Kora<span>Flash</span></div>
+  <p class="ftxt">أخبار الكرة أولاً بأول — يتحدث تلقائياً</p>
+</footer>
+
+<script>
+/* ════════════════════════════════════════════
+   ⚙️  CONFIG — عدّل هنا فقط
+   ════════════════════════════════════════════ */
+const CFG = {
+  apiUrl: './api/news',          // ← URL الـ API بتاع n8n
+  refresh: 5 * 60 * 1000,       // تحديث كل 5 دقائق
+  perPage: 8,                    // عدد الأخبار في الصفحة
+};
+
+/* ════════════════════════════════════════════
+   STATE
+   ════════════════════════════════════════════ */
+let ALL = [], filtered = [], page = 1, activeFilter = 'all';
+const EM = {محلي:'🏟️',أوروبي:'🌍',عالمي:'🌐',انتقالات:'💰',مباريات:'⚽',تقارير:'📊',default:'📰'};
+
+/* ════════════════════════════════════════════
+   FETCH
+   ════════════════════════════════════════════ */
+async function fetchNews(){
+  try{
+    const r = await fetch(CFG.apiUrl,{cache:'no-cache'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d = await r.json();
+    const list = Array.isArray(d)?d:(d.news||d.articles||[]);
+    if(list.length){ALL=list;applyFilter();toast('✅ تم تحديث الأخبار');}
+  }catch(e){
+    console.warn('API غير متاح، بيانات تجريبية:',e.message);
+    ALL=demo();applyFilter();
+  }
+}
+
+/* ════════════════════════════════════════════
+   FILTER & RENDER
+   ════════════════════════════════════════════ */
+function applyFilter(){
+  filtered = activeFilter==='all' ? ALL : ALL.filter(n=>n.category===activeFilter);
+  page=1;
+  renderHero();
+  renderGrid();
+  renderTop();
+  renderTicker();
+  renderTags();
+  renderStats();
+  document.getElementById('newsCount').textContent=filtered.length+' خبر';
+}
+
+/* ── HERO ── */
+function renderHero(){
+  if(!filtered.length) return;
+  const n=filtered[0];
+  document.getElementById('hcat').textContent=n.category||'أخبار';
+  document.getElementById('htitle').textContent=n.title;
+  document.getElementById('hsrc').textContent='📰 '+(n.source||'KoraFlash');
+  document.getElementById('htime').textContent='🕐 '+(n.time||fmtTime(n.publishedAt));
+  document.getElementById('heroMain').onclick=()=>openNews(n);
+
+  const hbg = document.getElementById('heroMain').querySelector('.hbg');
+  if(n.image){
+    hbg.style.background=`url('${n.image}') center/cover no-repeat`;
+    hbg.style.opacity='.45';
+  }
+
+  const side=document.getElementById('hside');
+  side.innerHTML='';
+  filtered.slice(1,5).forEach(item=>{
+    const d=document.createElement('div');
+    d.className='scard';d.onclick=()=>openNews(item);
+    d.innerHTML=`
+      <div class="sthumb">${item.image?`<img src="${item.image}" onerror="this.parentElement.textContent='${EM[item.category]||'⚽'}'">`:(EM[item.category]||'⚽')}</div>
+      <div class="sinfo">
+        <div class="scat">${item.category||'أخبار'}</div>
+        <div class="stitle">${item.title}</div>
+        <div class="stime">${item.time||fmtTime(item.publishedAt)}</div>
+      </div>`;
+    side.appendChild(d);
+  });
+}
+
+/* ── GRID ── */
+function renderGrid(more=false){
+  const grid=document.getElementById('ngrid');
+  if(!more) grid.innerHTML='';
+  const slice=filtered.slice((page-1)*CFG.perPage, page*CFG.perPage);
+
+  if(!slice.length && !more){
+    grid.innerHTML='<div class="empty"><div class="ei">📭</div><p>لا توجد أخبار في هذا التصنيف</p></div>';
+    return;
+  }
+  const oldBtn=document.getElementById('lmBtn');
+  if(oldBtn) oldBtn.remove();
+
+  slice.forEach(item=>{
+    const c=document.createElement('div');
+    c.className='ncard fi';c.onclick=()=>openNews(item);
+    c.innerHTML=`
+      <div class="nimg">${item.image?`<img src="${item.image}" alt="" onerror="this.parentElement.textContent='${EM[item.category]||'⚽'}'">`:(EM[item.category]||'⚽')}</div>
+      <div class="nbody">
+        <div class="ncat">${item.category||'أخبار'}</div>
+        <h3 class="ntitle">${item.title}</h3>
+        <p class="nexcerpt">${item.excerpt||''}</p>
+        <div class="nfoot"><span>${item.source||'KoraFlash'}</span><span>${item.time||fmtTime(item.publishedAt)}</span></div>
+      </div>`;
+    grid.appendChild(c);
+  });
+
+  if(page*CFG.perPage < filtered.length){
+    const w=document.createElement('div');
+    w.className='loadmore-wrap';w.id='lmBtn';
+    const b=document.createElement('button');
+    b.className='loadmore';b.textContent='عرض المزيد ↓';
+    b.onclick=()=>{page++;renderGrid(true);};
+    w.appendChild(b);grid.appendChild(w);
+  }
+}
+
+/* ── TOP LIST ── */
+function renderTop(){
+  const el=document.getElementById('toplist');
+  el.innerHTML=filtered.slice(0,5).map((item,i)=>`
+    <div class="titem-s" onclick='openNews(${JSON.stringify(item).replace(/'/g,"&#39;")})'>
+      <div class="tnum">0${i+1}</div>
+      <div class="tcont"><div class="ttitle">${item.title}</div><div class="ttime">${item.time||fmtTime(item.publishedAt)}</div></div>
+    </div>`).join('');
+}
+
+/* ── TICKER ── */
+function renderTicker(){
+  const t=document.getElementById('ticker');
+  const items=filtered.slice(0,14).map(n=>`<span class="titem">${n.title}</span>`).join('');
+  t.innerHTML=items+items;
+}
+
+/* ── TAGS ── */
+function renderTags(){
+  const tags=[...new Set(filtered.flatMap(n=>n.tags||[n.category]).filter(Boolean))].slice(0,20);
+  document.getElementById('tagcloud').innerHTML=tags.map(t=>`<span class="tag" onclick="filterByTag('${t}')">${t}</span>`).join('');
+}
+
+/* ── STATS ── */
+function renderStats(){
+  const cats={};
+  filtered.forEach(n=>{cats[n.category||'عام']=(cats[n.category||'عام']||0)+1;});
+  document.getElementById('stats').innerHTML=
+    Object.entries(cats).map(([k,v])=>`${EM[k]||'⚽'} ${k}: <strong>${v} خبر</strong>`).join('<br>')||'لا توجد أخبار';
+}
+
+/* ════════════════════════════════════════════
+   MODAL
+   ════════════════════════════════════════════ */
+function openNews(n){
+  document.getElementById('mcat').textContent=n.category||'أخبار';
+  document.getElementById('mtitle').textContent=n.title;
+  document.getElementById('msrc').textContent='📰 '+(n.source||'KoraFlash');
+  document.getElementById('mtime2').textContent='🕐 '+(n.time||fmtTime(n.publishedAt));
+  document.getElementById('mtext').textContent=n.content||n.excerpt||'لا يوجد محتوى تفصيلي متاح حالياً.';
+  document.getElementById('mlink').href=n.url||'#';
+  const mh=document.getElementById('mhero');
+  mh.innerHTML=n.image
+    ?`<img src="${n.image}" alt=""><div class="mhero-grad"></div>`
+    :`<span>${EM[n.category]||'⚽'}</span><div class="mhero-grad"></div>`;
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open');document.body.style.overflow='';}
+function maybeClose(e){if(e.target===document.getElementById('overlay'))closeModal();}
+
+/* ════════════════════════════════════════════
+   NAV FILTER
+   ════════════════════════════════════════════ */
+document.getElementById('nav').addEventListener('click',e=>{
+  const btn=e.target.closest('.npill');if(!btn) return;
+  document.querySelectorAll('.npill').forEach(p=>p.classList.remove('on'));
+  btn.classList.add('on');
+  activeFilter=btn.dataset.cat;
+  applyFilter();
+});
+
+function filterByTag(tag){
+  activeFilter='all';
+  document.querySelectorAll('.npill').forEach(p=>p.classList.remove('on'));
+  document.querySelector('[data-cat="all"]').classList.add('on');
+  filtered=ALL.filter(n=>(n.tags||[]).includes(tag)||n.category===tag);
+  page=1;renderGrid();renderTop();renderStats();
+  document.getElementById('newsCount').textContent=filtered.length+' خبر';
+  toast('🔍 '+tag);
+}
+
+/* ════════════════════════════════════════════
+   UTILS
+   ════════════════════════════════════════════ */
+function fmtTime(ts){
+  if(!ts) return 'الآن';
+  try{
+    const diff=Math.floor((Date.now()-new Date(ts))/60000);
+    if(diff<1) return 'الآن';
+    if(diff<60) return `منذ ${diff} دقيقة`;
+    if(diff<1440) return `منذ ${Math.floor(diff/60)} ساعة`;
+    return new Date(ts).toLocaleDateString('ar-EG');
+  }catch{return 'الآن';}
+}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+/* ════════════════════════════════════════════
+   DEMO DATA (تشتغل لو API مش موجود)
+   ════════════════════════════════════════════ */
+function demo(){return[
+  {id:1,title:'محمد صلاح يُجدد عقده مع ليفربول حتى 2027 برسمي مرتقب',excerpt:'أفادت تقارير إنجليزية بأن صلاح أبرم اتفاقاً مبدئياً مع الإدارة بزيادة مالية ضخمة.',category:'أوروبي',source:'BBC Sport',time:'منذ 8 دقائق',image:'',url:'#',tags:['ليفربول','صلاح','الدوري الإنجليزي']},
+  {id:2,title:'الأهلي يتوّج بلقب الدوري المصري للمرة الـ43 في التاريخ',excerpt:'فاز الفريق الأحمر على المقاولون العرب 3-1 ليحسم البطولة قبل ثلاث جولات من النهاية.',category:'محلي',source:'FilGoal',time:'منذ 32 دقيقة',image:'',url:'#',tags:['الأهلي','الدوري المصري']},
+  {id:3,title:'ريال مدريد يُوقّع رسمياً على كيليان مبابي بعقد تاريخي',excerpt:'أعلن النادي الملكي انضمام النجم الفرنسي في أضخم صفقة شهدها تاريخ الكرة الإسبانية.',category:'انتقالات',source:'Marca',time:'منذ ساعة',image:'',url:'#',tags:['ريال مدريد','مبابي','انتقالات']},
+  {id:4,title:'برشلونة يُسقط ريال مدريد في الكلاسيكو 3-2 بمشهد درامي',excerpt:'أحرز البارسا هدف الفوز في الدقيقة 93 بعد أن كان يتأخر بهدفين في الشوط الأول.',category:'أوروبي',source:'AS',time:'منذ ساعتين',image:'',url:'#',tags:['برشلونة','ريال مدريد','لاليغا']},
+  {id:5,title:'منتخب مصر يتأهل لنهائي كأس الأمم الأفريقية بعد ركلات الترجيح',excerpt:'تخطى المنتخب الوطني المغرب بركلات الترجيح 4-3 بعد التعادل 1-1 في الوقت الأصلي.',category:'محلي',source:'KingFut',time:'منذ 3 ساعات',image:'',url:'#',tags:['منتخب مصر','أمم أفريقيا']},
+  {id:6,title:'هالاند يحطم رقم رونالدو القياسي بـ37 هدفاً في موسم واحد',excerpt:'أحرز المهاجم النرويجي هدفه الـ37 هذا الموسم ليتجاوز الرقم التاريخي للنجم البرتغالي.',category:'أوروبي',source:'Sky Sports',time:'منذ 4 ساعات',image:'',url:'#',tags:['هالاند','مانشستر سيتي']},
+  {id:7,title:'الزمالك يُعيّن مدرباً أوروبياً جديداً قبل مباريات دوري أبطال أفريقيا',excerpt:'وافق مجلس القلعة البيضاء على تعاقد مع مدرب برتغالي خاض تجارب ناجحة في أوروبا.',category:'محلي',source:'FilGoal',time:'منذ 5 ساعات',image:'',url:'#',tags:['الزمالك','دوري أبطال أفريقيا']},
+  {id:8,title:'PSG يرفض عرضاً خليجياً ضخماً لضم فيتينها بـ200 مليون يورو',excerpt:'أبلغت إدارة الباريسيين النادي السعودي بقرارها النهائي رفض أي صفقة تشمل اللاعب.',category:'انتقالات',source:"L'Equipe",time:'منذ 6 ساعات',image:'',url:'#',tags:['PSG','انتقالات']},
+  {id:9,title:'دورتموند يُقصي مانشستر سيتي من دوري أبطال أوروبا بهدف قاتل',excerpt:'أحرز بطل نيجيريا الشاب هدف التأهل في الوقت المحتسب بتسديدة خرافية.',category:'أوروبي',source:'UEFA',time:'منذ 7 ساعات',image:'',url:'#',tags:['دورتموند','مانشستر سيتي','أبطال أوروبا']},
+  {id:10,title:'فيفا يُعلن رسمياً ملعب القاهرة مضيفاً لكأس العالم 2030',excerpt:'أدرجت اللجنة المنظمة ملعب القاهرة الدولي ضمن قائمة الملاعب الرسمية للبطولة.',category:'عالمي',source:'FIFA',time:'منذ يوم',image:'',url:'#',tags:['فيفا','كأس العالم','مصر']},
+];}
+
+/* ════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════ */
+fetchNews();
+setInterval(fetchNews, CFG.refresh);
+
+/* ESC to close modal */
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+</script>
+</body>
+</html>
