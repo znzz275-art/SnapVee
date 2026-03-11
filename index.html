@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KoraFlash | أخبار الكرة أولاً بأول</title>
+  <meta name="description" content="آخر أخبار كرة القدم المحلية والعالمية" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green: #00c853;
+      --green-dark: #009624;
+      --green-glow: rgba(0,200,83,0.18);
+      --bg: #0a0f0d;
+      --bg2: #111916;
+      --bg3: #182118;
+      --card: #131a14;
+      --card-border: #1e2d1f;
+      --text: #e8f5e9;
+      --text-muted: #7a9e7e;
+      --accent: #ffeb3b;
+      --red: #ff1744;
+      --font-head: 'Cairo', sans-serif;
+      --font-body: 'Tajawal', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ===== NOISE OVERLAY ===== */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,15,13,0.92);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: var(--green);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 0 18px var(--green-glow);
+      animation: pulse-logo 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse-logo {
+      0%, 100% { box-shadow: 0 0 18px var(--green-glow); }
+      50% { box-shadow: 0 0 32px rgba(0,200,83,0.45); }
+    }
+
+    .logo-text {
+      font-family: var(--font-head);
+      font-weight: 900;
+      font-size: 22px;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text span { color: var(--green); }
+
+    .nav-pills {
+      display: flex;
+      gap: 8px;
+    }
+
+    .nav-pill {
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      transition: all 0.2s;
+    }
+
+    .nav-pill:hover, .nav-pill.active {
+      background: var(--green-glow);
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--red);
+      font-family: var(--font-head);
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+      animation: blink 1.2s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    /* ===== TICKER ===== */
+    .ticker-wrap {
+      background: var(--green);
+      overflow: hidden;
+      height: 36px;
+      display: flex;
+      align-items: center;
+    }
+
+    .ticker-label {
+      background: var(--green-dark);
+      color: #000;
+      font-family: var(--font-head);
+      font-weight: 900;
+      font-size: 13px;
+      padding: 0 18px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .ticker-scroll {
+      display: flex;
+      animation: ticker-move 40s linear infinite;
+      gap: 60px;
+      padding-right: 40px;
+    }
+
+    .ticker-item {
+      color: #000;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 13px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ticker-item::before {
+      content: '⚽';
+      font-size: 12px;
+    }
+
+    @keyframes ticker-move {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ===== HERO / FEATURED ===== */
+    .hero-section {
+      max-width: 1400px;
+      margin: 40px auto 0;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 24px;
+    }
+
+    .hero-main {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      min-height: 460px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .hero-main:hover { transform: scale(1.01); }
+
+    .hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      inset: 0;
+      opacity: 0.5;
+    }
+
+    .hero-img-placeholder {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #0d2b14 0%, #1a4a20 50%, #0a1f0d 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 120px;
+      opacity: 0.3;
+    }
+
+    .hero-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10,15,13,0.97) 0%, rgba(10,15,13,0.4) 60%, transparent 100%);
+    }
+
+    .hero-content {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      padding: 28px;
+    }
+
+    .category-badge {
+      display: inline-block;
+      background: var(--green);
+      color: #000;
+      font-family: var(--font-head);
+      font-weight: 900;
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero-title {
+      font-family: var(--font-head);
+      font-weight: 900;
+      font-size: 28px;
+      line-height: 1.4;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* ===== SIDE NEWS ===== */
+    .hero-side {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .side-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .side-card::before {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--green);
+      transform: scaleY(0);
+      transition: transform 0.25s;
+      border-radius: 0 14px 14px 0;
+    }
+
+    .side-card:hover { background: var(--bg3); border-color: var(--green); }
+    .side-card:hover::before { transform: scaleY(1); }
+
+    .side-thumb {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      background: var(--bg3);
+      flex-shrink: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+    }
+
+    .side-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .side-info { flex: 1; }
+
+    .side-cat {
+      font-size: 10px;
+      color: var(--green);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+    }
+
+    .side-title {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .side-time {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-wrap {
+      max-width: 1400px;
+      margin: 40px auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 32px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-family: var(--font-head);
+      font-weight: 900;
+      font-size: 20px;
+      color: var(--text);
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--card-border);
+    }
+
+    .section-count {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--card);
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+    }
+
+    /* ===== NEWS GRID ===== */
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .news-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .news-card:hover {
+      border-color: var(--green);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,200,83,0.12);
+    }
+
+    .news-card-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: var(--bg3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+    }
+
+    .news-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .news-card-body { padding: 16px; }
+
+    .news-card-cat {
+      font-size: 10px;
+      color: var(--green);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 8px;
+    }
+
+    .news-card-title {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 10px;
+      color: var(--text);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .news-card-excerpt {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .news-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--card-border);
+      padding-top: 10px;
+    }
+
+    /* ===== LIST NEWS ===== */
+    .news-list { display: flex; flex-direction: column; gap: 14px; }
+
+    .list-item {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .list-item:hover { border-color: var(--green); background: var(--bg3); }
+
+    .list-num {
+      font-family: var(--font-head);
+      font-weight: 900;
+      font-size: 22px;
+      color: var(--card-border);
+      width: 32px;
+      flex-shrink: 0;
+      line-height: 1;
+      padding-top: 2px;
+    }
+
+    .list-content { flex: 1; }
+
+    .list-title {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+
+    .list-time { font-size: 11px; color: var(--text-muted); }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar { }
+
+    .sidebar-widget {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .widget-title {
+      font-family: var(--font-head);
+      font-weight: 900;
+      font-size: 15px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .tag {
+      background: var(--bg3);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tag:hover { background: var(--green-glow); border-color: var(--green); color: var(--green); }
+
+    /* ===== LOADING ===== */
+    .loading-grid {
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: 20px;
+    }
+
+    .skeleton {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      animation: skeleton-pulse 1.5s ease-in-out infinite;
+    }
+
+    .skeleton-img {
+      width: 100%;
+      height: 180px;
+      background: var(--bg3);
+    }
+
+    .skeleton-body { padding: 16px; }
+
+    .skeleton-line {
+      height: 12px;
+      background: var(--bg3);
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    .skeleton-line.short { width: 60%; }
+
+    @keyframes skeleton-pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      max-width: 760px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      transform: translateY(30px);
+      transition: transform 0.3s;
+    }
+
+    .modal-overlay.open .modal { transform: translateY(0); }
+
+    .modal-hero {
+      width: 100%;
+      height: 280px;
+      background: var(--bg3);
+      border-radius: 24px 24px 0 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      position: relative;
+    }
+
+    .modal-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .modal-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(17,25,22,0.9) 0%, transparent 60%);
+    }
+
+    .modal-body { padding: 28px; }
+
+    .modal-cat {
+      display: inline-block;
+      background: var(--green);
+      color: #000;
+      font-family: var(--font-head);
+      font-weight: 900;
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+
+    .modal-title {
+      font-family: var(--font-head);
+      font-weight: 900;
+      font-size: 24px;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .modal-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      display: flex;
+      gap: 14px;
+    }
+
+    .modal-text {
+      font-size: 15px;
+      line-height: 1.9;
+      color: #c8e6c9;
+      margin-bottom: 20px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      z-index: 10;
+    }
+
+    .modal-close:hover { background: var(--red); border-color: var(--red); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      border-top: 1px solid var(--card-border);
+      margin-top: 60px;
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: var(--font-head);
+      font-weight: 900;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .footer-logo span { color: var(--green); }
+
+    .footer-text {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state .icon { font-size: 60px; margin-bottom: 16px; }
+    .empty-state p { font-size: 15px; }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--green);
+      color: #000;
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 13px;
+      padding: 10px 24px;
+      border-radius: 30px;
+      z-index: 9999;
+      opacity: 0;
+      transition: all 0.3s;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 960px) {
+      .hero-section { grid-template-columns: 1fr; }
+      .hero-side { display: none; }
+      .main-wrap { grid-template-columns: 1fr; }
+      .news-grid { grid-template-columns: 1fr; }
+      .nav-pills { display: none; }
+    }
+
+    /* ===== ENTRY ANIMATION ===== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 0.5s forwards;
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in:nth-child(1) { animation-delay: 0.05s; }
+    .fade-in:nth-child(2) { animation-delay: 0.1s; }
+    .fade-in:nth-child(3) { animation-delay: 0.15s; }
+    .fade-in:nth-child(4) { animation-delay: 0.2s; }
+    .fade-in:nth-child(5) { animation-delay: 0.25s; }
+    .fade-in:nth-child(6) { animation-delay: 0.3s; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">⚽</div>
+      <div class="logo-text">Kora<span>Flash</span></div>
+    </a>
+    <nav class="nav-pills">
+      <button class="nav-pill active" onclick="filterNews('all')">الكل</button>
+      <button class="nav-pill" onclick="filterNews('محلي')">محلي</button>
+      <button class="nav-pill" onclick="filterNews('أوروبي')">أوروبي</button>
+      <button class="nav-pill" onclick="filterNews('عالمي')">عالمي</button>
+      <button class="nav-pill" onclick="filterNews('انتقالات')">انتقالات</button>
+    </nav>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      مباشر الآن
+    </div>
+  </div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-label">⚡ عاجل</div>
+  <div style="overflow:hidden;flex:1">
+    <div class="ticker-scroll" id="tickerScroll">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero-section" id="heroSection">
+  <div class="hero-main" id="heroMain" onclick="">
+    <div class="hero-img-placeholder">⚽</div>
+    <div class="hero-gradient"></div>
+    <div class="hero-content">
+      <div class="category-badge" id="herocat">تحميل...</div>
+      <h1 class="hero-title" id="herotitle">جاري تحميل أحدث الأخبار...</h1>
+      <div class="hero-meta">
+        <span id="herosource">KoraFlash</span>
+        <span id="herotime">الآن</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-side" id="heroSide"></div>
+</section>
+
+<!-- MAIN CONTENT -->
+<div class="main-wrap">
+  <main>
+    <div class="section-head">
+      <h2 class="section-title">📰 آخر الأخبار</h2>
+      <div class="section-line"></div>
+      <div class="section-count" id="newsCount">...</div>
+    </div>
+    <div class="news-grid" id="newsGrid">
+      <!-- skeleton -->
+      <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div></div>
+      <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div></div>
+      <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div></div>
+      <div class="skeleton"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line"></div><div class="skeleton-line"></div></div></div>
+    </div>
+  </main>
+
+  <aside class="sidebar">
+    <div class="sidebar-widget">
+      <div class="widget-title">🔥 الأكثر قراءة</div>
+      <div id="topNewsList" class="news-list"></div>
+    </div>
+    <div class="sidebar-widget">
+      <div class="widget-title">🏷️ المواضيع</div>
+      <div class="tag-cloud" id="tagCloud"></div>
+    </div>
+    <div class="sidebar-widget" style="background: linear-gradient(135deg,var(--bg3),var(--card));border-color:var(--green)">
+      <div class="widget-title" style="color:var(--green)">⚡ يتحدث الآن</div>
+      <p style="font-size:13px;color:var(--text-muted);line-height:1.8" id="statsText">جاري تحميل الإحصائيات...</p>
+    </div>
+  </aside>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-hero" id="modalHero">
+      <span>⚽</span>
+      <div class="modal-hero-overlay"></div>
+    </div>
+    <button class="modal-close" onclick="closeNewsModal()">✕</button>
+    <div class="modal-body">
+      <div class="modal-cat" id="modalCat"></div>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <div class="modal-meta">
+        <span id="modalSource"></span>
+        <span id="modalTime"></span>
+      </div>
+      <p class="modal-text" id="modalText"></p>
+      <a id="modalLink" href="#" target="_blank" style="display:inline-block;background:var(--green);color:#000;font-family:var(--font-head);font-weight:900;font-size:13px;padding:10px 24px;border-radius:8px;text-decoration:none;">قراءة الخبر كاملاً ←</a>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Kora<span>Flash</span></div>
+  <p class="footer-text">أخبار الكرة أولاً بأول — مدعوم بـ n8n</p>
+</footer>
+
+<script>
+// ============================================================
+//  CONFIG — عدّل هنا فقط
+// ============================================================
+const CONFIG = {
+  apiUrl: './api/news',          // n8n يبعث POST هنا أو GET لجلب الأخبار
+  refreshInterval: 5 * 60 * 1000, // كل 5 دقائق
+  maxNews: 50,
+};
+
+// ============================================================
+//  STATE
+// ============================================================
+let allNews = [];
+let currentFilter = 'all';
+
+const emojis = { محلي:'🏟️', أوروبي:'🇪🇺', عالمي:'🌍', انتقالات:'💰', تقارير:'📊', مباريات:'⚽', default:'📰' };
+
+// ============================================================
+//  FETCH NEWS
+// ============================================================
+async function fetchNews() {
+  try {
+    const res = await fetch(CONFIG.apiUrl, { cache: 'no-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    // يقبل array أو { news: array }
+    const list = Array.isArray(data) ? data : (data.news || data.articles || []);
+    if (list.length > 0) {
+      allNews = list.slice(0, CONFIG.maxNews);
+      renderAll();
+      showToast('✅ تم تحديث الأخبار');
+    }
+  } catch (e) {
+    // في حالة عدم وجود API، نستخدم Demo data
+    console.warn('API غير متاح، استخدام بيانات تجريبية:', e.message);
+    allNews = getDemoData();
+    renderAll();
+  }
+}
+
+// ============================================================
+//  DEMO DATA (تظهر قبل ما n8n يبدأ يبعت)
+// ============================================================
+function getDemoData() {
+  return [
+    { id:1, title:'محمد صلاح يقترب من تمديد عقده مع ليفربول حتى 2027', excerpt:'أفادت تقارير إنجليزية بأن اللاعب المصري محمد صلاح يجري مفاوضات جدية مع إدارة ليفربول لتمديد عقده موسماً إضافياً.', category:'أوروبي', source:'Goal عربي', time:'منذ 12 دقيقة', image:'', url:'#', tags:['ليفربول','صلاح','إنجلترا'] },
+    { id:2, title:'الأهلي يُتوّج بلقب الدوري المصري للمرة الـ43 في التاريخ', excerpt:'حقق الفريق الأحمر بطولة الدوري المصري الممتاز بعد فوزه على المقاولون العرب بثلاثة أهداف مقابل هدف.', category:'محلي', source:'FilGoal', time:'منذ 45 دقيقة', image:'', url:'#', tags:['الأهلي','الدوري المصري'] },
+    { id:3, title:'ريال مدريد يتفاوض مع كيليان مبابي على عقد تاريخي', excerpt:'يسعى النادي الملكي لضم النجم الفرنسي في صفقة تُعدّ الأضخم في تاريخ كرة القدم الأوروبية.', category:'انتقالات', source:'Marca', time:'منذ ساعة', image:'', url:'#', tags:['ريال مدريد','مبابي','انتقالات'] },
+    { id:4, title:'برشلونة يفوز بكلاسيكو الأرض على ريال مدريد 3-2', excerpt:'أقام الكلاسيكو الإسباني في برنابيو وانتهى بانتصار تاريخي للبارسا بثلاثة أهداف مقابل هدفين.', category:'أوروبي', source:'AS', time:'منذ ساعتين', image:'', url:'#', tags:['برشلونة','ريال مدريد','لاليغا'] },
+    { id:5, title:'منتخب مصر يتأهل لنهائي كأس الأمم الأفريقية', excerpt:'فاز المنتخب الوطني على المغرب بركلات الترجيح وتأهل لمواجهة نيجيريا في النهائي.', category:'محلي', source:'KingFut', time:'منذ 3 ساعات', image:'', url:'#', tags:['منتخب مصر','أمم أفريقيا'] },
+    { id:6, title:'إيرلينغ هالاند يحطم رقم رون في الدوري الإنجليزي', excerpt:'أحرز المهاجم النرويجي هدفه الـ36 في الموسم الواحد ليتجاوز الرقم القياسي الذي حققه كريستيانو رونالدو.', category:'أوروبي', source:'BBC Sport', time:'منذ 4 ساعات', image:'', url:'#', tags:['هالاند','مانشستر سيتي','الدوري الإنجليزي'] },
+    { id:7, title:'الزمالك يُعلن إقالة المدرب وتعيين خليفة قبل مباريات أفريقيا', excerpt:'قرر مجلس إدارة القلعة البيضاء إعفاء المدرب الحالي من مهامه وفتح باب التفاوض مع أسماء أوروبية.', category:'محلي', source:'FilGoal', time:'منذ 5 ساعات', image:'', url:'#', tags:['الزمالك','الدوري المصري'] },
+    { id:8, title:'PSG يرفض عرضاً خيالياً لبيع فيتينها من الدوري السعودي', excerpt:'رفض نادي باريس سان جيرمان عرضاً سعودياً ضخماً للتفريط في النجم البرتغالي المميز.', category:'انتقالات', source:'L\'Equipe', time:'منذ 6 ساعات', image:'', url:'#', tags:['PSG','فيتينها','السوق السعودية'] },
+  ];
+}
+
+// ============================================================
+//  RENDER
+// ============================================================
+function renderAll() {
+  const filtered = currentFilter === 'all' ? allNews : allNews.filter(n => n.category === currentFilter);
+  renderHero(filtered);
+  renderGrid(filtered);
+  renderTopList(filtered.slice(0,5));
+  renderTicker(filtered);
+  renderTags(filtered);
+  document.getElementById('newsCount').textContent = filtered.length + ' خبر';
+  updateStats(filtered);
+}
+
+function renderHero(news) {
+  if (!news.length) return;
+  const n = news[0];
+  document.getElementById('herocat').textContent = n.category || 'أخبار';
+  document.getElementById('herotitle').textContent = n.title;
+  document.getElementById('herosource').textContent = n.source || 'KoraFlash';
+  document.getElementById('herotime').textContent = n.time || formatTime(n.publishedAt);
+  document.getElementById('heroMain').onclick = () => openNews(n);
+
+  // Side cards
+  const side = document.getElementById('heroSide');
+  side.innerHTML = '';
+  news.slice(1, 5).forEach(item => {
+    side.innerHTML += `
+      <div class="side-card" onclick="openNews(${JSON.stringify(item).replace(/"/g,'&quot;')})">
+        <div class="side-thumb">${emojis[item.category]||'⚽'}</div>
+        <div class="side-info">
+          <div class="side-cat">${item.category||'أخبار'}</div>
+          <div class="side-title">${item.title}</div>
+          <div class="side-time">${item.time||formatTime(item.publishedAt)}</div>
+        </div>
+      </div>`;
+  });
+}
+
+function renderGrid(news) {
+  const grid = document.getElementById('newsGrid');
+  grid.innerHTML = '';
+  if (!news.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>لا توجد أخبار حالياً في هذا التصنيف</p></div>';
+    return;
+  }
+  news.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'news-card fade-in';
+    card.onclick = () => openNews(item);
+    card.innerHTML = `
+      <div class="news-card-img">${item.image ? `<img src="${item.image}" alt="" onerror="this.parentElement.textContent='${emojis[item.category]||'⚽'}'">` : emojis[item.category]||'⚽'}</div>
+      <div class="news-card-body">
+        <div class="news-card-cat">${item.category||'أخبار'}</div>
+        <h3 class="news-card-title">${item.title}</h3>
+        <p class="news-card-excerpt">${item.excerpt||''}</p>
+        <div class="news-card-footer">
+          <span>${item.source||'KoraFlash'}</span>
+          <span>${item.time||formatTime(item.publishedAt)}</span>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function renderTopList(news) {
+  const list = document.getElementById('topNewsList');
+  list.innerHTML = news.map((item, i) => `
+    <div class="list-item" onclick="openNews(${JSON.stringify(item).replace(/"/g,'&quot;')})">
+      <div class="list-num">0${i+1}</div>
+      <div class="list-content">
+        <div class="list-title">${item.title}</div>
+        <div class="list-time">${item.time||formatTime(item.publishedAt)}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderTicker(news) {
+  const t = document.getElementById('tickerScroll');
+  const items = news.slice(0,12).map(n => `<span class="ticker-item">${n.title}</span>`).join('');
+  t.innerHTML = items + items; // doubled for seamless loop
+}
+
+function renderTags(news) {
+  const all = news.flatMap(n => n.tags || [n.category]).filter(Boolean);
+  const unique = [...new Set(all)].slice(0, 20);
+  document.getElementById('tagCloud').innerHTML = unique.map(t => `<span class="tag" onclick="searchTag('${t}')">${t}</span>`).join('');
+}
+
+function updateStats(news) {
+  const cats = {};
+  news.forEach(n => { cats[n.category] = (cats[n.category]||0)+1; });
+  const lines = Object.entries(cats).map(([k,v]) => `${emojis[k]||'⚽'} ${k}: <strong style="color:var(--green)">${v} خبر</strong>`).join('<br>');
+  document.getElementById('statsText').innerHTML = lines || 'لا توجد أخبار';
+}
+
+// ============================================================
+//  MODAL
+// ============================================================
+function openNews(item) {
+  document.getElementById('modalCat').textContent = item.category || 'أخبار';
+  document.getElementById('modalTitle').textContent = item.title;
+  document.getElementById('modalSource').textContent = '📰 ' + (item.source || 'KoraFlash');
+  document.getElementById('modalTime').textContent = '🕐 ' + (item.time || formatTime(item.publishedAt));
+  document.getElementById('modalText').textContent = item.content || item.excerpt || 'لا يوجد محتوى تفصيلي متاح.';
+  document.getElementById('modalLink').href = item.url || '#';
+  const hero = document.getElementById('modalHero');
+  hero.innerHTML = item.image
+    ? `<img src="${item.image}" alt=""><div class="modal-hero-overlay"></div>`
+    : `<span>${emojis[item.category]||'⚽'}</span><div class="modal-hero-overlay"></div>`;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeNewsModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal')) closeNewsModal();
+}
+
+// ============================================================
+//  FILTER
+// ============================================================
+function filterNews(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  renderAll();
+}
+
+function searchTag(tag) {
+  allNews.filter(n => (n.tags||[]).includes(tag) || n.category === tag);
+  showToast('🔍 عرض أخبار: ' + tag);
+}
+
+// ============================================================
+//  UTILS
+// ============================================================
+function formatTime(ts) {
+  if (!ts) return 'الآن';
+  try {
+    const d = new Date(ts);
+    const diff = Math.floor((Date.now() - d) / 60000);
+    if (diff < 1) return 'الآن';
+    if (diff < 60) return `منذ ${diff} دقيقة`;
+    if (diff < 1440) return `منذ ${Math.floor(diff/60)} ساعة`;
+    return d.toLocaleDateString('ar-EG');
+  } catch { return 'الآن'; }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+fetchNews();
+setInterval(fetchNews, CONFIG.refreshInterval);
+</script>
+</body>
+</html>
